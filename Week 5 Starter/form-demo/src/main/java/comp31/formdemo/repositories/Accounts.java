@@ -18,7 +18,7 @@ public class Accounts extends ArrayList<Employee> {
         return null;
     }
 
-    // TODO add findByDepartment
+    //add findByDepartment
     public List<Employee> findByDepartment(String department) {
         List<Employee> employeesInDepartment = new ArrayList<>();
         for (Employee employee : this) {
@@ -28,7 +28,7 @@ public class Accounts extends ArrayList<Employee> {
         }
         return employeesInDepartment;
     }
-    // TODO add findAllEmployees
+    //add findAllEmployees
     public List<Employee> findAllEmployees() {
         return new ArrayList<>(this);
     }
