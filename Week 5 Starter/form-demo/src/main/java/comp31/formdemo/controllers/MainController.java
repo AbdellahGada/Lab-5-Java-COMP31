@@ -11,76 +11,102 @@ import comp31.formdemo.services.LoginService;
 @Controller
 public class MainController {
 
-    //initializes a logger instance. It uses a LoggerFactory to create a logger associated with the MainController
     Logger logger = LoggerFactory.getLogger(MainController.class);
+
     LoginService loginService;
-    // MainController class. It takes a single parameter of type LoginService. 
-    //This constructor is used to create instances of the MainController class and inject a LoginService dependency at the time of object creation.
+
     public MainController(LoginService loginService) {
         this.loginService = loginService;
     }
 
-    // This method handles a GET request to the root URL ("/").
-    // It logs a message, creates an empty Employee object, adds it to the model,
-    // and returns the view name "login-form" to be rendered by the associated template.
-    @GetMapping("/")
+    @GetMapping("/")//GET request for the root URL ("/") and displays the login form.
     String getRoot(Model model) {
         logger.info("---- At root.");
+         // Create a new Employee object to serve as the model for the login form
         Employee employee = new Employee(); 
-        model.addAttribute("employee", employee);
+        model.addAttribute("employee", employee); 
+        // Return the name of the view template for the login form
         return "login-form";
     }
 
-    // This method handles a POST request to "/login".
-    // It logs information, retrieves a user from a service, and determines the next page to display based on login success.
     @PostMapping("/login")
     public String getForm(Employee employee, Model model) {
         logger.info("---- At /login.");
         logger.info("---- " + employee.toString());
         Employee currentUser = loginService.findByUserId(employee.getUserId());
         String returnPage;
-        
+    
         if (currentUser == null) {
             model.addAttribute("employee", employee);
             returnPage = "login-form";
         } else {
-            if (employee.getPassword().equals(currentUser.getPassword())) {    
-                String department = currentUser.getDepartment();
-                model.addAttribute("employee", currentUser);               
-                returnPage =  department;
-            } else {               
-                model.addAttribute("employee", employee);
-                returnPage = "login-form";
+            logger.info("--else--" + currentUser.toString());
+    
+            if (currentUser.getDepartment() != null) {
+                model.addAttribute("employee", currentUser);
+    
+                switch (currentUser.getDepartment()) {
+                    case "admin":
+                        returnPage = "departments/admin";
+                        break;
+                    case "orders":
+                        returnPage = "departments/orders";
+                        break;
+                    case "repairs":
+                        returnPage = "departments/repairs";
+                        break;
+                    case "sales":
+                        returnPage = "departments/sales";
+                        break;
+                    default:
+                        returnPage = "welcome";
+                }
+            } else {
+                returnPage = "welcome";
             }
         }
+    
         return returnPage;
     }
 
-    // This method handles a GET request to "/add-employee".
-    // It prepares and returns a form for adding a new employee by adding an empty Employee object to the model.
-    @GetMapping("/add-employee")
-    public String getAddEmployeeForm(Model model) {
-        model.addAttribute("employee", new Employee()); 
-        return "new-employee-form"; 
-    }
-    
-
-    //Register Get
     @GetMapping("/register")
-    public String getRegister(Model model) 
-    {
+    public String getRegister(Model model)
+    { 
+        // Create a new Employee object to serve as the model for the form
         model.addAttribute("employee", new Employee());
+        // Return the name of the view template for the registration form
         return "register-form";
     }
 
-    // This method handles a POST request to "/register".
-    // It adds a new employee, clears the form by adding a new empty Employee to the model,
-    // and returns the "login-form" view.
-    @PostMapping ("/register")
-    public String postRegister(Model model, Employee employee)
+    @GetMapping("/add-employee")
+    public String getAddEmployee(Model model)
     {
-        loginService.addEmployee(employee);//ADD new employee
+        // Create a new Employee object to serve as the model for the form
         model.addAttribute("employee", new Employee());
+        // Return the name of the view template for the form to add a new employee
+        return "login-form";
+    }
+
+    @PostMapping("/add-employee")
+    public String postAddEmployee( Model model, Employee newemployee )
+    {
+        // Add the new employee to the system via the login service
+        loginService.addemployee(newemployee);
+        // Add the new employee to the model
+        model.addAttribute("employee", newemployee);
+        // Redirect to the admin page after adding the employee
+        return "redirect:/admin";
+    }
+
+    // POST request to register a new employee
+    @PostMapping("/register")
+    public String postRegister( Model model, Employee newemployee )
+    {
+        // Register the new employee via the login service
+        loginService.addemployee(newemployee);
+        // Add the registered employee to the model
+        model.addAttribute("employee", newemployee);
+        // Return the name of the view template to display after registration
         return "login-form";
     }
 

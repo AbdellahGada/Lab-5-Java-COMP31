@@ -1,10 +1,7 @@
 package comp31.formdemo.repositories;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.stereotype.Component;
-
 import comp31.formdemo.model.Employee;
 
 @Component
@@ -31,6 +28,10 @@ public class Accounts extends ArrayList<Employee> {
     //add findAllEmployees
     public List<Employee> findAllEmployees() {
         return new ArrayList<>(this);
+    }
+
+    public boolean verifiedUser(String userId, String password) {
+        return false;
     }
 
 }
