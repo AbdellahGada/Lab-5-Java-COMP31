@@ -1,23 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" type="text/css" th:href="@{css/styles.css}">
+    <title>Admin</title>
 </head>
+
 <body>
-    <h1>Create New Employee</h1>
-    <form method="post" action="/add-employee">
-        <label for="userId">User ID:</label>
-        <input type="text" id="userId" name="userId" required><br>
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br>
-
-        <label for="department">Department:</label>
-        <input type="text" id="department" name="department" required><br>
-
-        <input type="submit" value="Create Employee">
+    <h1>Admin Page</h1>
+    <h2 th:text="'Welcome ' + ${employee.userId} +'. Your are now Log in'"></h2>
+    <form method="post" action="/add-new-employee">
+        <div th:object="${newemployee}">
+            <label for="userId">User ID:</label>
+            <input th:field="*{userId}" type="text" name="userId"> <br>
+            <label for="firstName">First Name:</label>
+            <input th:field="*{firstName}" type="text" name="firstName"> <br>
+            <label for="lastName">Last Name:</label>
+            <input th:field="*{lastName}" type="text" name="lastName"> <br>
+            <label for="password">Password :</label>
+            <input th:field="*{password}" type="text" name="password"> <br>
+            <label for="department">Department :</label>
+            <input th:field="*{department}" type="text" name="department"> <br>
+            <input type="submit" value="Create Employee">
+        </div>
     </form>
+    <form action="/getAll">
+        <select th:name="department">
+            <option value="allEmployee">List All Employees</option>
+            <option value="allAdmins">Admin</option>
+            <option value="allSales">Sales</option>
+            <option value="allRepairs">Repairs</option>
+            <option value="allOrders">Orders</option>
+        </select>
+        <input type="submit">
+    </form>
+
+    <table id="data">
+        <tr>
+            <th>userId</th>
+            <th>firstName</th>
+            <th>lastName</th>
+            <th>department</th>
+        </tr>
+        <tr th:each="employee:${employeeList}">
+            <td th:text="${employee.userId}"></td>
+            <td th:text="${employee.firstName}"></td>
+            <td th:text="${employee.lastName}"></td>
+            <td th:text="${employee.department}"></td>
+        </tr>
+    </table>
 </body>
+
 </html>

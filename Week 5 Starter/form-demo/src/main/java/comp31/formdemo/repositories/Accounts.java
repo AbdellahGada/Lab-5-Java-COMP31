@@ -1,6 +1,6 @@
 package comp31.formdemo.repositories;
+
 import java.util.ArrayList;
-import java.util.List;
 import org.springframework.stereotype.Component;
 import comp31.formdemo.model.Employee;
 
@@ -15,9 +15,9 @@ public class Accounts extends ArrayList<Employee> {
         return null;
     }
 
-    //add findByDepartment
-    public List<Employee> findByDepartment(String department) {
-        List<Employee> employeesInDepartment = new ArrayList<>();
+    // Find all employees in a specific department
+    public ArrayList<Employee> findAllEmployeesInDepartment(String department) {
+        ArrayList<Employee> employeesInDepartment = new ArrayList<>();
         for (Employee employee : this) {
             if (employee.getDepartment().equals(department)) {
                 employeesInDepartment.add(employee);
@@ -25,13 +25,34 @@ public class Accounts extends ArrayList<Employee> {
         }
         return employeesInDepartment;
     }
-    //add findAllEmployees
-    public List<Employee> findAllEmployees() {
-        return new ArrayList<>(this);
+
+    // Find all employees
+    public ArrayList<Employee> findAllEmployees() {
+        return this;
     }
 
-    public boolean verifiedUser(String userId, String password) {
+    // Verify user based on user ID and password
+    public boolean verifiedUser(Employee checkEmployee) {
+
+        if (checkEmployee != null) {
+            for (Employee employee : this) {
+                if (employee.getUserId().equals(checkEmployee.getUserId())
+                        && employee.getPassword().equals(checkEmployee.getPassword())) {
+                    return true;
+                }
+            }
+        }
         return false;
+    }
+
+    public ArrayList<String> findAllDepartment() {
+        ArrayList<String> department = new ArrayList<String>();
+        for (Employee employee : this) {
+            if (!department.contains(employee.getDepartment())) {
+                department.add(employee.getDepartment());
+            }
+        }
+        return department;
     }
 
 }
